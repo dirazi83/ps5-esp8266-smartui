@@ -1,8 +1,16 @@
 # PS5 WebKit Autoloader — ESP8266 Smart-OLED build
 
-Ready-to-flash firmware for [owendswang/ps5-webkit-autoloader-esp32](https://github.com/owendswang/ps5-webkit-autoloader-esp32) targeting **ESP8266 boards with a built-in 0.96" OLED**, with an on-screen status UI.
+## Credits
 
-Shared via [issue #4](https://github.com/owendswang/ps5-webkit-autoloader-esp32/issues/4).
+**This is a derivative build of [owendswang/ps5-webkit-autoloader-esp32](https://github.com/owendswang/ps5-webkit-autoloader-esp32)** — all core credit goes to the original author **[owendswang](https://github.com/owendswang)** for the project itself: the ESP32 WebKit autoloader, the captive-portal installer, the web UI, and the PS5 exploit payload infrastructure.
+
+- Original project: https://github.com/owendswang/ps5-webkit-autoloader-esp32
+- Please star ⭐ the original repo if you use this firmware
+- This build only adds an **ESP8266 port + onboard OLED status UI** on top of their work; everything else is theirs
+
+Shared via [issue #4](https://github.com/owendswang/ps5-webkit-autoloader-esp32/issues/4) in the original repository.
+
+Ready-to-flash firmware for the original project targeting **ESP8266 boards with a built-in 0.96" OLED**, with an on-screen status UI.
 
 ## File
 
