@@ -16,8 +16,10 @@ Ready-to-flash firmware for the original project targeting **ESP8266 boards with
 
 | File | Description |
 |---|---|
-| `ps5-autoloader-smartUI-v1.0-esp8266.bin` | Merged flash image (firmware + filesystem), flash at `0x0` |
-| `esp8266-arduino.ino` | Full sketch source (HTTP-only + OLED UI + JB tracker) |
+| `ps5-autoloader-smartUI-v1.1-esp8266.bin` | **Latest** — merged flash image (firmware + filesystem), flash at `0x0` (HTTPS enabled, upstream v0.8.3 base) |
+| `ps5-autoloader-smartUI-v1.0-esp8266.bin` | Previous — HTTP-only + OLED UI + JB tracker |
+| `esp8266-arduino.ino` | Full sketch source (HTTPS + OLED UI + JB tracker, v1.1) |
+| `server_certs.h` | Embedded TLS cert (CN=manuals.playstation.net) required to build v1.1 |
 
 ## Tested board
 
@@ -47,7 +49,7 @@ No erase required. Image covers `0x000000–0x3FA000` (app @ `0x0`, LittleFS @ `
 
 ## Build notes
 
-- HTTP-only (BearSSL removed) — fits ESP8266 RAM, fine for local exploit serving
+- v1.1 re-enables HTTPS via BearSSL `ESP8266WebServerSecure` on port 443 (upstream v0.8.3), with the OLED smart UI ported on top. Fits ESP8266 RAM (IRAM ~92%, RAM ~42%).
 - **Important:** on the 4M3M layout LittleFS must be at `0x100000` (`0x100000 + 0x2FA000 = 0x3FA000`). Flashing the FS at `0x110000` ends at `0x400000`, overwrites RF cal, and the board crash-loops with `Exception 29` in WiFi init.
 - Built with arduino-cli, esp8266 core 3.1.2, ThingPulse OLED driver 4.6.2
-- FQBN: `esp8266:esp8266:generic:eesz=4M3M,FlashMode=dout,ssl=basic,xtal=80,...`
+- FQBN: `esp8266:esp8266:generic:eesz=4M3M,FlashMode=dout,ssl=all,xtal=80,...`

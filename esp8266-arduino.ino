@@ -2,8 +2,10 @@
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266WebServerSecure.h>
 #include <LittleFS.h>
 #include <Wire.h>
+#include "server_certs.h"
 
 // ================= OLED DRIVER SELECT =================
 // 0 = SSD1306 (0.96" 128x64, most common)
@@ -22,7 +24,7 @@ extern "C" {
 #include <user_interface.h>
 }
 
-static const char *FW_VER = "v1.0";
+static const char *FW_VER = "v1.1";
 static const char *AP_SSID = "ESP32_PORTAL";
 static const char *AP_PASSWORD = "12345678";
 static const char *PORTAL_REDIRECT_URL = "http://192.168.4.1/";
@@ -35,6 +37,7 @@ static const char *NO_CACHE_VALUE = "no-store, no-cache, must-revalidate, max-ag
 
 DNSServer dnsServer;
 ESP8266WebServer webServer(80);
+BearSSL::ESP8266WebServerSecure httpsServer(443);
 
 static String normalizePath(const String &uri);
 
@@ -574,6 +577,13 @@ void setup() {
     setupRoutes(webServer);
     logHeap("HTTP ready");
 
+    Serial.println("Starting HTTPS");
+    static BearSSL::X509List serverCertificate((const char *)server_crt);
+    static BearSSL::PrivateKey serverPrivateKey((const char *)server_key);
+    httpsServer.getServer().setECCert(&serverCertificate, BR_KEYTYPE_KEYX | BR_KEYTYPE_SIGN, &serverPrivateKey);
+    setupRoutes(httpsServer);
+    logHeap("HTTPS ready");
+
     if (hasDisplay) {
         uiMsg3("AP READY", AP_SSID, "connect PS5 now");
         delay(900);
@@ -589,6 +599,7 @@ static uint32_t lastUi = 0;
 void loop() {
     dnsServer.processNextRequest();
     webServer.handleClient();
+    httpsServer.handleClient();
 
     uint32_t now = millis();
     if (now - lastPoll >= 500) {
